@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ImHungry</string>
     <string name="title_activity_maps">Restaurantes</string>
+    <string name="location">Localización</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.example.hawk.imhungry;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +13,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.parceler.Parcels;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private Restaurant mRestaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mRestaurant = Parcels.unwrap(getIntent().getParcelableExtra("RESTAURANT_LOCATION"));
+
+        if (mRestaurant == null)
+            return;
+
+        setTitle(mRestaurant.getName());
     }
 
     @Override
@@ -52,14 +62,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        if (mRestaurant == null)
+            return;
+
         GoogleMap mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng location = new LatLng(mRestaurant.getLatitude(), mRestaurant.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(location).title(mRestaurant.name));
+
+        //Move the camera to the user's location and zoom in!
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 17.0f));
     }
 
     @Override

@@ -1,18 +1,23 @@
 package com.example.hawk.imhungry;
 
+import org.parceler.Parcel;
+
 /**
  * Created by mcvasquez on 11/9/17.
  */
 
+@Parcel
 public class Restaurant {
 
-    private String name;
-    private String thumbnail;
-    private double rating;
-    private String address;
-    private String phone;
-    private double latitude;
-    private double longitude;
+    String name;
+    String thumbnail;
+    double rating;
+    String address;
+    String phone;
+    double latitude;
+    double longitude;
+
+    public Restaurant() {}
 
     public String getName() {
         return name;
