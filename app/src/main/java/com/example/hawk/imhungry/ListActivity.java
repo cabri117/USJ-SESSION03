@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,8 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -42,10 +47,20 @@ public class ListActivity extends AppCompatActivity {
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         listView = findViewById(R.id.listView);
         JSONResourceReader reader = new JSONResourceReader(this.getResources(), R.raw.restaurants);
-        List<Restaurant> jsonObj = reader.constructUsingGson();
+        final List<Restaurant> jsonObj = reader.constructUsingGson();
         ListAdapter la = new ListAdapter(this,R.layout.adapter_list,jsonObj,
                 location.getLatitude(), location.getLongitude());
         listView.setAdapter(la);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Parcelable listParcelable = Parcels.wrap(jsonObj.get(position));
+                Intent i = new Intent(getApplicationContext(),RestaurantsDetailsActivity.class);
+                i.putExtra("RESTAURANT", listParcelable);
+                startActivity(i);
+
+            }
+        });
 
     }
 

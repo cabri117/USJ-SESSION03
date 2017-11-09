@@ -1,9 +1,11 @@
 package com.example.hawk.imhungry;
 
+import org.parceler.Parcel;
+
 /**
  * Created by mcvasquez on 11/9/17.
  */
-
+@Parcel
 public class Restaurant {
 
     private String name;
