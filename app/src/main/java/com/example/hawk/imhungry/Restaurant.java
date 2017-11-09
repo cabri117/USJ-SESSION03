@@ -14,8 +14,8 @@ public class Restaurant {
     double rating;
     String address;
     String phone;
-    double latitude;
-    double longitude;
+    float latitude;
+    float longitude;
 
     public Restaurant() {}
 
@@ -59,19 +59,19 @@ public class Restaurant {
         this.phone = phone;
     }
 
-    public double getLatitude() {
+    public float getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public float getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
 }
