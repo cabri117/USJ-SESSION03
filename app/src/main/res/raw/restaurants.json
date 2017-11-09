@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Rio de la Plata",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipPuZgD45Ou41MTd1saAosi9nO044yaTe3YtnOOX",
+    "rating": 4.0,
+    "address": "Plaza Roma, 50010 Zaragoza",
+    "phone": "976 33 39 10",
+    "latitude": 41.6495685,
+    "longitude": -0.900579
+  },
+  {
+    "name": "Asador La Cazuela",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipOsqA8EGOnFXOUm4PGLwCD5D6clLlmCD3wOYxyK",
+    "rating": 4.4,
+    "address": "Calle Daroca, 5, 50017 Zaragoza",
+    "phone": "976 53 26 53",
+    "latitude": 41.6493207,
+    "longitude": -0.9070712
+  },
+  {
+    "name": "Don Fon",
+    "thumbnail": "https://geo0.ggpht.com/cbk?panoid=T9wFxu_XaYZc4zD-R3s6eQ&output=thumbnail&cb_client=search.TACTILE.gps&thumb=2&w=408&h=200&yaw=354.6992&pitch=0&thumbfov=100",
+    "rating": 2.9,
+    "address": "Calle Berenguer de Bardají, 68, 50017 Zaragoza",
+    "phone": "976 53 72 81",
+    "latitude": 41.6489264,
+    "longitude": -0.9105924
+  },
+  {
+    "name": "Goralai",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipMASiVchIAr7sYInW8fi6q9zOjdXPMzV7g7Mqao",
+    "rating": 4.3,
+    "address": "Calle Sta. Teresa de Jesús, 26, 50006 Zaragoza",
+    "phone": "976 55 72 03",
+    "latitude": 41.6408878,
+    "longitude": -0.8952421
+  },
+  {
+    "name": "Quema",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipNA_YnVcT4-T0SEfgRg8PopaX2RD-IN_CrBgfRR",
+    "rating": 4.8,
+    "address": "Paseo María Agustín, 20, 50004 Zaragoza",
+    "phone": "976 43 92 14",
+    "latitude": 41.6513975,
+    "longitude": -0.8924563
+  },
+  {
+    "name": "La Bodega de Chema",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipPPOWrYkvu67pubaAO64FsM5f89LgUz-qvB-gO5",
+    "rating": 4.3,
+    "address": "Calle Félix Latassa, 34, 50006 Zaragoza",
+    "phone": "976 55 50 14",
+    "latitude": 41.641165,
+    "longitude": -0.8958897
+  },
+  {
+    "name": "Novodabo",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipORBP_15Pi9QIUtOR7YchfZGs7PXJSwX_6qXYjI",
+    "rating": 4.1,
+    "address": "Plaza Aragón, 12, 50004 Zaragoza",
+    "phone": "976 56 78 46",
+    "latitude": 41.6489307,
+    "longitude": -0.8871323
+  },
+  {
+    "name": "Aragonia Palafox",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipMSLaaiah7ZUjcEpFSfEWZ2grDsoht_ZK1WCe3v",
+    "rating": 4.6,
+    "address": "Hotel Palafox, C/ Marques de Casa Jimenez, s/n, 50004 Zaragoza",
+    "phone": "976 79 42 43",
+    "latitude": 41.6503898,
+    "longitude": -0.8876046
+  },
+  {
+    "name": "Colette",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipON9USHKtz5g1i6U4PrHRz-OsxhwPtnE6MYNUms",
+    "rating": 3.9,
+    "address": "C/ Cesáreo Alierta, 4, 50008 Zaragoza",
+    "phone": "976 22 63 49",
+    "latitude": 41.6467811,
+    "longitude": -0.8820034
+  },
+  {
+    "name": "El Foro",
+    "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipPoxen1zJ8sDIX7b45JvVryP4iQn4eewPxr_FHz",
+    "rating": 4.2,
+    "address": "Calle Eduardo Ibarra, 4, 50009 Zaragoza",
+    "phone": "976 56 96 11",
+    "latitude": 41.637924,
+    "longitude": -0.9052513
+  }
+]
