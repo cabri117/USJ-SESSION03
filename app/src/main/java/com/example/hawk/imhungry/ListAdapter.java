@@ -52,7 +52,7 @@ public class ListAdapter extends ArrayAdapter<Restaurant> {
         }
 
         ImageView imageView = v.findViewById(R.id.restProfilePic);
-        Glide.with(v).load(items.get(position).getThumbnail()).into(imageView);
+        GlideApp.with(v).load(items.get(position).getThumbnail()).circleCrop().into(imageView);
 
         TextView restName = v.findViewById(R.id.restName);
         restName.setText(items.get(position).getName());
