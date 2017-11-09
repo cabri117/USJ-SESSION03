@@ -5,16 +5,19 @@ import org.parceler.Parcel;
 /**
  * Created by mcvasquez on 11/9/17.
  */
+
 @Parcel
 public class Restaurant {
 
-    private String name;
-    private String thumbnail;
-    private double rating;
-    private String address;
-    private String phone;
-    private float latitude;
-    private float longitude;
+    String name;
+    String thumbnail;
+    double rating;
+    String address;
+    String phone;
+    float latitude;
+    float longitude;
+
+    public Restaurant() {}
 
     public String getName() {
         return name;
