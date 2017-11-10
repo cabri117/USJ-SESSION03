@@ -6,18 +6,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.parceler.Parcels;
 
+import java.util.List;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private Restaurant mRestaurant;
+    private List<Restaurant> mRestaurants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,48 +39,50 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mRestaurant = Parcels.unwrap(getIntent().getParcelableExtra("RESTAURANT_LOCATION"));
 
-        if (mRestaurant == null)
-            return;
-
-        setTitle(mRestaurant.getName());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem register = menu.findItem(R.id.maps);
-        register.setVisible(false);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.location:
-                //TODO: ASUMO QUE AQUI BUSCAS LA LOCALIZACION ACTUAL
+        if (mRestaurant != null) {
+            setTitle(mRestaurant.getName());
+        } else {
+            JSONResourceReader reader = new JSONResourceReader(this.getResources(), R.raw.restaurants);
+            mRestaurants = reader.constructUsingGson();
+            setTitle(getString(R.string.title_activity_maps));
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if (mRestaurant == null)
-            return;
 
         GoogleMap mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
 
-        // Add a marker in Sydney and move the camera
-        LatLng location = new LatLng(mRestaurant.getLatitude(), mRestaurant.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(location).title(mRestaurant.name));
+        if (mRestaurant != null) {
+            // Add a marker in selected restaurant and move the camera
+            LatLng location = new LatLng(mRestaurant.getLatitude(), mRestaurant.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(location).title(mRestaurant.name));
 
-        //Move the camera to the user's location and zoom in!
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 17.0f));
+            //Move the camera to the user's location and zoom in!
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 17.0f));
+        } else {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            for (Restaurant restaurant : mRestaurants) {
+                LatLng location = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
+                MarkerOptions marker = new MarkerOptions().position(location).title(restaurant.name);
+                mMap.addMarker(marker);
+
+                //the include method will calculate the min and max bound.
+                builder.include(marker.getPosition());
+            }
+
+            // Global Zoom
+            LatLngBounds bounds = builder.build();
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int padding = (int) (width * 0.10); // offset from edges of the map 10% of screen
+
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+            mMap.animateCamera(cu);
+        }
     }
 
     @Override
