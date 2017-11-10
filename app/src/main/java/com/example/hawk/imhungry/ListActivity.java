@@ -27,29 +27,25 @@ import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
     private ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         Toolbar toolbar = findViewById(R.id.my_awesome_toolbar);
         setSupportActionBar(toolbar);
-
-
-
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         String requiredPermission = "android.permission.ACCESS_FINE_LOCATION";
-        int checkVal =this.checkCallingOrSelfPermission(requiredPermission);
-        if (checkVal==PackageManager.PERMISSION_GRANTED){
+        int checkVal = this.checkCallingOrSelfPermission(requiredPermission);
+        if (checkVal == PackageManager.PERMISSION_GRANTED) {
             onInit();
         } else {
             checkGPSPermission();
         }
-
     }
 
     @Override
@@ -70,7 +66,7 @@ public class ListActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.maps:
-                Intent i = new Intent(this,MapsActivity.class);
+                Intent i = new Intent(this, MapsActivity.class);
                 startActivity(i);
         }
         return super.onOptionsItemSelected(item);
@@ -94,27 +90,25 @@ public class ListActivity extends AppCompatActivity {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         assert locationManager != null;
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if(location != null) {
+        if (location != null) {
             lat = location.getLatitude();
             log = location.getLongitude();
         }
         listView = findViewById(R.id.listView);
         JSONResourceReader reader = new JSONResourceReader(this.getResources(), R.raw.restaurants);
         final List<Restaurant> jsonObj = reader.constructUsingGson();
-        ListAdapter la = new ListAdapter(this,R.layout.adapter_list,jsonObj,
+        ListAdapter la = new ListAdapter(this, R.layout.adapter_list, jsonObj,
                 lat, log);
         listView.setAdapter(la);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Parcelable listParcelable = Parcels.wrap(jsonObj.get(position));
-                Intent i = new Intent(getApplicationContext(),RestaurantsDetailsActivity.class);
+                Intent i = new Intent(getApplicationContext(), RestaurantsDetailsActivity.class);
                 i.putExtra("RESTAURANT", listParcelable);
                 startActivity(i);
-
             }
         });
-
     }
 
     @Override
@@ -129,9 +123,8 @@ public class ListActivity extends AppCompatActivity {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     onInit();
-
                 } else {
-                   checkGPSPermission();
+                    checkGPSPermission();
                 }
             }
         }
