@@ -19,7 +19,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private Restaurant mRestaurant;
     private List<Restaurant> mRestaurants;
@@ -42,8 +42,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mRestaurant != null) {
             setTitle(mRestaurant.getName());
         } else {
-            JSONResourceReader reader = new JSONResourceReader(this.getResources(), R.raw.restaurants);
-            mRestaurants = reader.constructUsingGson();
+            mRestaurants = Parcels.unwrap(getIntent().getParcelableExtra("RESTAURANT_LIST"));
             setTitle(getString(R.string.title_activity_maps));
         }
     }

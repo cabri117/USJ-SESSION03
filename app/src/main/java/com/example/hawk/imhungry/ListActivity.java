@@ -5,15 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +23,13 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-public class ListActivity extends AppCompatActivity {
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
+
+public class ListActivity extends AppCompatActivity implements JsonFromInternet.MyAsyncTaskListener {
     private ListView listView;
+    private List<Restaurant> jsonString;
+    MaterialProgressBar progressBar;
+    JsonFromInternet jFI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +37,40 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         Toolbar toolbar = findViewById(R.id.my_awesome_toolbar);
         setSupportActionBar(toolbar);
+        progressBar = findViewById(R.id.pb);
+        listView = findViewById(R.id.listView);
+        jFI = new JsonFromInternet();
+        jFI.setListener(this);
+        String requiredPermission = "android.permission.ACCESS_FINE_LOCATION";
+        int checkVal = this.checkCallingOrSelfPermission(requiredPermission);
+        if (checkVal == PackageManager.PERMISSION_GRANTED) {
+            jFI.execute();
+        } else {
+            checkGPSPermission();
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        String requiredPermission = "android.permission.ACCESS_FINE_LOCATION";
-        int checkVal = this.checkCallingOrSelfPermission(requiredPermission);
-        if (checkVal == PackageManager.PERMISSION_GRANTED) {
-            onInit();
-        } else {
-            checkGPSPermission();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(!jFI.isCancelled()) {
+            jFI.cancel(true);
         }
     }
 
@@ -66,8 +92,15 @@ public class ListActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.maps:
-                Intent i = new Intent(this, MapsActivity.class);
-                startActivity(i);
+                if(jsonString != null) {
+                    Intent i = new Intent(this, MapsActivity.class);
+                    Parcelable listParcelable = Parcels.wrap(jsonString);
+                    i.putExtra("RESTAURANT_LIST", listParcelable);
+                    startActivity(i);
+                } else {
+                    Toast.makeText(this,getString(R.string.c_i_i),Toast.LENGTH_SHORT).show();
+                }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -94,21 +127,26 @@ public class ListActivity extends AppCompatActivity {
             lat = location.getLatitude();
             log = location.getLongitude();
         }
-        listView = findViewById(R.id.listView);
-        JSONResourceReader reader = new JSONResourceReader(this.getResources(), R.raw.restaurants);
-        final List<Restaurant> jsonObj = reader.constructUsingGson();
-        ListAdapter la = new ListAdapter(this, R.layout.adapter_list, jsonObj,
-                lat, log);
-        listView.setAdapter(la);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Parcelable listParcelable = Parcels.wrap(jsonObj.get(position));
-                Intent i = new Intent(getApplicationContext(), RestaurantsDetailsActivity.class);
-                i.putExtra("RESTAURANT", listParcelable);
-                startActivity(i);
-            }
-        });
+
+        //JSONResourceReader reader = new JSONResourceReader(this.getResources(), R.raw.restaurants);
+        //final List<Restaurant> jsonObj = jsonString;
+        if(jsonString!=null) {
+            progressBar.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            ListAdapter la = new ListAdapter(this, R.layout.adapter_list, jsonString,
+                    lat, log);
+            listView.setAdapter(la);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                    Parcelable listParcelable = Parcels.wrap(jsonString.get(position));
+                    Intent i = new Intent(getApplicationContext(), RestaurantsDetailsActivity.class);
+                    i.putExtra("RESTAURANT", listParcelable);
+                    startActivity(i);
+                }
+            });
+        }
+
     }
 
     @Override
@@ -122,11 +160,25 @@ public class ListActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    onInit();
+                    jFI.execute();
                 } else {
                     checkGPSPermission();
                 }
             }
         }
     }
+
+    @Override
+    public void onPreExecuteConcluded() {
+        listView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onPostExecuteConcluded(List<Restaurant> result) {
+
+        jsonString = result;
+        onInit();
+    }
+
 }

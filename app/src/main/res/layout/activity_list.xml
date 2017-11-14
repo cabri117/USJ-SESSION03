@@ -19,6 +19,16 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/pb"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:indeterminate="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:mpb_progressStyle="horizontal" />
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="0dp"
@@ -26,7 +36,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_awesome_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/my_awesome_toolbar"
+        android:visibility="gone"/>
 
 
 </android.support.constraint.ConstraintLayout>
