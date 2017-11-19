@@ -19,10 +19,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
+
 import org.parceler.Parcels;
 
 import java.util.List;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class ListActivity extends AppCompatActivity implements JsonFromInternet.MyAsyncTaskListener {
@@ -44,7 +52,7 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
         String requiredPermission = "android.permission.ACCESS_FINE_LOCATION";
         int checkVal = this.checkCallingOrSelfPermission(requiredPermission);
         if (checkVal == PackageManager.PERMISSION_GRANTED) {
-            jFI.execute();
+            checkInternetConnectivity();
         } else {
             checkGPSPermission();
         }
@@ -181,4 +189,36 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
         onInit();
     }
 
+    private void checkInternetConnectivity() {
+        Single<Boolean> single = ReactiveNetwork.checkInternetConnectivity();
+        single.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean isConnectedToInternet) throws Exception {
+                        if (isConnectedToInternet) {
+                            jFI.execute();
+                        } else {
+                            showInternetConnectivityDialog();
+                        }
+                    }
+                });
+    }
+
+    private void showInternetConnectivityDialog() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.warning)
+                .content(R.string.internet_connectivity_message)
+                .positiveText(R.string.retry)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        checkInternetConnectivity();
+                        dialog.dismiss();
+                    }
+                })
+                .autoDismiss(false)
+                .cancelable(false)
+                .show();
+    }
 }
