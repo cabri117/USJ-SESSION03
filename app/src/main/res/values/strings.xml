@@ -3,4 +3,7 @@
     <string name="title_activity_maps">Restaurantes</string>
     <string name="location">Localización</string>
     <string name="c_i_i">Cargando información de internet</string>
+    <string name="warning">Advertencia</string>
+    <string name="internet_connectivity_message">Usted no cuenta con conexión a internet. Por favor conectarse a internet y reintentar</string>
+    <string name="retry">Reintentar</string>
 </resources>
