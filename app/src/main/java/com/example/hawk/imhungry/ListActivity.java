@@ -13,10 +13,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -40,15 +40,15 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class ListActivity extends AppCompatActivity implements JsonFromInternet.MyAsyncTaskListener,
         SearchView.OnQueryTextListener{
-    private ListView listView;
-    private List<Restaurant> jsonString;
-    private List<Restaurant> filteredList;
     MaterialProgressBar progressBar;
     JsonFromInternet jFI;
     SearchView searchView;
     double lat = 0.0;
     double log = 0.0;
-
+    SearchManager searchManager;
+    private ListView listView;
+    private List<Restaurant> jsonString;
+    private List<Restaurant> filteredList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,16 +97,28 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
 
-        SearchManager searchManager = (SearchManager)
+        searchManager = (SearchManager)
                 getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView)  menu.findItem(R.id.search).getActionView();
-        assert searchManager != null;
-        searchView.setSearchableInfo(searchManager.
-                getSearchableInfo(getComponentName()));
-        searchView.setFocusable(true);
-        searchView.setIconified(false);
-        searchView.setSubmitButtonEnabled(false);
-        searchView.setOnQueryTextListener(this);
+        MenuItem searchMenuItem = menu.findItem(R.id.search);
+        searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if (getCurrentFocus() != null) {
+                    InputMethodManager inputMethodManager = (InputMethodManager)
+                            getSystemService(INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            0);
+                }
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -122,14 +134,25 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
         int id = item.getItemId();
         switch (id) {
             case R.id.maps:
-                if(jsonString != null) {
+                if (isDownloadedFromInternet()) {
                     Intent i = new Intent(this, MapsActivity.class);
                     Parcelable listParcelable = Parcels.wrap(jsonString);
                     i.putExtra("RESTAURANT_LIST", listParcelable);
                     startActivity(i);
-                } else {
-                    Toast.makeText(this,getString(R.string.c_i_i),Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.search:
+                if (isDownloadedFromInternet()) {
+                    searchView.setSearchableInfo(searchManager.
+                            getSearchableInfo(getComponentName()));
+                    searchView.setFocusable(true);
+                    searchView.setIconified(false);
+                    searchView.setSubmitButtonEnabled(false);
+                    searchView.setOnQueryTextListener(this);
+
+                }
+                break;
+
 
         }
         return super.onOptionsItemSelected(item);
@@ -233,15 +256,14 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        searchView.clearFocus();
 
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
         filterString(newText);
-
         return false;
     }
 
@@ -279,4 +301,14 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
 
         }
     }
+
+    public boolean isDownloadedFromInternet() {
+        if (jsonString != null) {
+            return true;
+        } else {
+            Toast.makeText(this, getString(R.string.c_i_i), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
 }
