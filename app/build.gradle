@@ -48,4 +48,5 @@ dependencies {
 
     // A beautiful, fluid, and customizable dialogs API.
     compile 'com.afollestad.material-dialogs:core:0.9.5.0'
+    implementation 'com.android.support:design:26.1.0'
 }

@@ -6,4 +6,6 @@
     <string name="warning">Advertencia</string>
     <string name="internet_connectivity_message">Usted no cuenta con conexión a internet. Por favor conectarse a internet y reintentar</string>
     <string name="retry">Reintentar</string>
+    <string name="phone_error">Usted no cuenta con servicio telefónico.</string>
+    <string name="accept">Aceptar</string>
 </resources>
