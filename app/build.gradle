@@ -49,3 +49,15 @@ dependencies {
     // A beautiful, fluid, and customizable dialogs API.
     compile 'com.afollestad.material-dialogs:core:0.9.5.0'
 }
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '26.1.0'
+            }
+        }
+
+    }
+}
