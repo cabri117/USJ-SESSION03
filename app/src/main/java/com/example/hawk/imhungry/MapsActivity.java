@@ -3,8 +3,6 @@ package com.example.hawk.imhungry;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,7 +17,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private Restaurant mRestaurant;
     private List<Restaurant> mRestaurants;
@@ -57,7 +55,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mRestaurant != null) {
             // Add a marker in selected restaurant and move the camera
             LatLng location = new LatLng(mRestaurant.getLatitude(), mRestaurant.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(location).title(mRestaurant.name));
+            MarkerOptions marker = new MarkerOptions()
+                    .position(location)
+                    .title(mRestaurant.name)
+                    .snippet("Tel: " + mRestaurant.phone);
+            mMap.addMarker(marker);
 
             //Move the camera to the user's location and zoom in!
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 17.0f));
@@ -66,7 +68,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             for (Restaurant restaurant : mRestaurants) {
                 LatLng location = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
-                MarkerOptions marker = new MarkerOptions().position(location).title(restaurant.name);
+                MarkerOptions marker = new MarkerOptions()
+                        .position(location)
+                        .title(restaurant.name)
+                        .snippet("Tel: " + restaurant.phone);
                 mMap.addMarker(marker);
 
                 //the include method will calculate the min and max bound.
