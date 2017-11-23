@@ -31,6 +31,7 @@ public class RestaurantsDetailsActivity extends AppCompatActivity {
     private TextView tvAddress;
     private TextView tvPhone;
     private RatingBar rbRating;
+    private TextView tvDescription;
     private FloatingActionButton fabCall;
 
     private Restaurant mRestaurant;
@@ -47,6 +48,7 @@ public class RestaurantsDetailsActivity extends AppCompatActivity {
         tvPhone = findViewById(R.id.tvPhone);
         rbRating = findViewById(R.id.rbRating);
         fabCall = findViewById(R.id.fabCall);
+        tvDescription = findViewById(R.id.tvDescription);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -63,6 +65,7 @@ public class RestaurantsDetailsActivity extends AppCompatActivity {
         tvAddress.setText(mRestaurant.getAddress());
         tvPhone.setText(mRestaurant.getPhone());
         rbRating.setRating((float) mRestaurant.getRating());
+        tvDescription.setText(mRestaurant.getDescription());
 
         GlideApp.with(this)
                 .load(mRestaurant.thumbnail)

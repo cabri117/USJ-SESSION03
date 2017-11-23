@@ -10,6 +10,7 @@ import org.parceler.Parcel;
 public class Restaurant {
 
     String name;
+    String description;
     String thumbnail;
     double rating;
     String address;
@@ -25,6 +26,14 @@ public class Restaurant {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getThumbnail() {
