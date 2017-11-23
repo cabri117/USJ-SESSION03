@@ -23,12 +23,13 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".ListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable">
             </meta-data>
-            </activity>
+        </activity>
         <activity
             android:name=".RestaurantsDetailsActivity">
             <meta-data
