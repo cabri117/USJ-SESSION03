@@ -38,7 +38,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
-public class ListActivity extends AppCompatActivity implements JsonFromInternet.MyAsyncTaskListener,
+public class MainActivity extends AppCompatActivity implements JsonFromInternet.MyAsyncTaskListener,
         SearchView.OnQueryTextListener{
     MaterialProgressBar progressBar;
     JsonFromInternet jFI;
@@ -53,7 +53,7 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.my_awesome_toolbar);
         setSupportActionBar(toolbar);
         progressBar = findViewById(R.id.pb);

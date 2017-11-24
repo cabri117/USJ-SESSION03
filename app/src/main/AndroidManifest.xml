@@ -22,7 +22,7 @@
             android:label="@string/title_activity_maps"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".ListActivity"
+            android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop">
             <meta-data
@@ -34,7 +34,7 @@
             android:name=".RestaurantsDetailsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ListActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".SplashActivity"
