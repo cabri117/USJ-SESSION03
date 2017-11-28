@@ -278,31 +278,6 @@ public class MainActivity extends AppCompatActivity implements JsonFromInternet.
         return false;
     }
 
-    public void setList(double lat , double log, final List<Restaurant> list) {
-
-        if(list!=null) {
-            final double latFi = lat;
-            final double logFi = log;
-            progressBar.setVisibility(View.GONE);
-            listView.setVisibility(View.VISIBLE);
-            ListAdapter la = new ListAdapter(this, R.layout.adapter_list, list,
-                    lat, log);
-            listView.setAdapter(la);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Parcelable listParcelable = Parcels.wrap(list.get(position));
-                    Intent i = new Intent(getApplicationContext(), RestaurantsDetailsActivity.class);
-                    i.putExtra("RESTAURANT", listParcelable);
-                    i.putExtra("actualLog", logFi);
-                    i.putExtra("actualLat", latFi);
-                    startActivity(i);
-                }
-            });
-        }
-
-    }
-
     public void filterString(String filterText) {
         filteredList = new ArrayList<>();
         if (!Objects.equals(filterText, " ")) {

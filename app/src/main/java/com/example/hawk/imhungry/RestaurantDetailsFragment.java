@@ -34,7 +34,6 @@ public class RestaurantDetailsFragment extends Fragment {
     private TextView tvDescription;
     private FloatingActionButton fabCall, fabMap;
 
-    public Restaurant mRestaurant;
     private Restaurant mRestaurant;
     double lat = 0.0;
     double log = 0.0;
@@ -61,16 +60,16 @@ public class RestaurantDetailsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        lat = getIntent().getDoubleExtra("actualLat", 0.0);
-        log = getIntent().getDoubleExtra("actualLog", 0.0);
 
-        mRestaurant = Parcels.unwrap(getIntent().getParcelableExtra("RESTAURANT"));
+
 
         Bundle args = getArguments();
         if (args == null) {
             constraintLayout.setVisibility(View.GONE);
             return;
         }
+        lat = args.getDouble("actualLat", 0.0);
+        log = args.getDouble("actualLog", 0.0);
 
         mRestaurant = Parcels.unwrap(args.getParcelable("RESTAURANT"));
         setupViews(mRestaurant);
@@ -102,7 +101,8 @@ public class RestaurantDetailsFragment extends Fragment {
         fabMap.setOnClickListener(onBtnFabMapClickListener);
 
         constraintLayout.setVisibility(View.VISIBLE);
-    @Override
+    }
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_restaurants_details, menu);
         return true;
@@ -129,7 +129,7 @@ public class RestaurantDetailsFragment extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     private View.OnClickListener onBtnCallClickListener = new View.OnClickListener() {
         @Override
