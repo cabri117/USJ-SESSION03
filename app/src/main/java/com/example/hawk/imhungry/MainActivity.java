@@ -17,8 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -38,26 +36,38 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
-public class ListActivity extends AppCompatActivity implements JsonFromInternet.MyAsyncTaskListener,
-        SearchView.OnQueryTextListener{
+public class MainActivity extends AppCompatActivity implements JsonFromInternet.MyAsyncTaskListener,
+        SearchView.OnQueryTextListener, RestaurantListFragment.OnRestaurantSelectedListener {
     MaterialProgressBar progressBar;
     JsonFromInternet jFI;
     SearchView searchView;
-    double lat = 0.0;
-    double log = 0.0;
     SearchManager searchManager;
-    private ListView listView;
+    private Bundle mBundleActivity;
+
     private List<Restaurant> jsonString;
     private List<Restaurant> filteredList;
+
+    double lat;
+    double log;
+
+    boolean isFiltering;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_main);
+        mBundleActivity = savedInstanceState;
         Toolbar toolbar = findViewById(R.id.my_awesome_toolbar);
         setSupportActionBar(toolbar);
+
         progressBar = findViewById(R.id.pb);
-        listView = findViewById(R.id.listView);
+
+        lat = 0.0;
+        log = 0.0;
+        jsonString = new ArrayList<>();
+        filteredList = new ArrayList<>();
+        isFiltering = false;
+
         jFI = new JsonFromInternet();
         jFI.setListener(this);
         String requiredPermission = "android.permission.ACCESS_FINE_LOCATION";
@@ -67,28 +77,12 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
         } else {
             checkGPSPermission();
         }
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(!jFI.isCancelled()) {
+        if (!jFI.isCancelled()) {
             jFI.cancel(true);
         }
     }
@@ -99,7 +93,7 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
 
         searchManager = (SearchManager)
                 getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView)  menu.findItem(R.id.search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         MenuItem searchMenuItem = menu.findItem(R.id.search);
         searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
@@ -154,8 +148,6 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
 
                 }
                 break;
-
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -177,15 +169,37 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
         if (location != null) {
             lat = location.getLatitude();
             log = location.getLongitude();
-
         }
 
-        setList(lat,log, jsonString);
+        // Check whether the activity is using the layout version with
+        // the fragment_container FrameLayout. If so, we must add the first fragment
+        if (findViewById(R.id.fragment_container) != null) {
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (mBundleActivity != null) {
+                return;
+            }
 
-        //JSONResourceReader reader = new JSONResourceReader(this.getResources(), R.raw.restaurants);
-        //final List<Restaurant> jsonObj = jsonString;
+            // Create an instance of ExampleFragment
+            RestaurantListFragment restaurantListFragment = RestaurantListFragment.createInstance(lat, log, jsonString);
 
+            // In case this activity was started with special instructions from an Intent,
+            // pass the Intent's extras to the fragment as arguments
+            restaurantListFragment.setArguments(getIntent().getExtras());
 
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, restaurantListFragment).commit();
+        } else {
+            RestaurantListFragment restaurantListFragment = (RestaurantListFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.list_fragment);
+
+            if (restaurantListFragment != null)
+                restaurantListFragment.setupListAdapter(lat, log, jsonString);
+        }
+
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -209,14 +223,13 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
 
     @Override
     public void onPreExecuteConcluded() {
-        listView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onPostExecuteConcluded(List<Restaurant> result) {
-
-        jsonString = result;
+        if (result != null)
+            jsonString = result;
         onInit();
     }
 
@@ -256,7 +269,6 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
     @Override
     public boolean onQueryTextSubmit(String query) {
         searchView.clearFocus();
-
         return false;
     }
 
@@ -292,17 +304,30 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
     }
 
     public void filterString(String filterText) {
-        filteredList = new ArrayList<Restaurant>();
-        if(!Objects.equals(filterText, " ")) {
-        for(Restaurant rest : jsonString) {
-            if(rest.getName().toLowerCase().contains(filterText.toLowerCase())) {
-                filteredList.add(rest);
+        filteredList = new ArrayList<>();
+        if (!Objects.equals(filterText, " ")) {
+            for (Restaurant rest : jsonString) {
+                if (rest.getName().toLowerCase().contains(filterText.toLowerCase())) {
+                    filteredList.add(rest);
+                }
             }
-        }
 
-        setList(lat,log,filteredList);
+            RestaurantListFragment restaurantListFrag;
 
-        }
+            if (findViewById(R.id.fragment_container) != null) {
+                restaurantListFrag = (RestaurantListFragment)getSupportFragmentManager().
+                        findFragmentById(R.id.fragment_container);
+            } else {
+                restaurantListFrag = (RestaurantListFragment)getSupportFragmentManager().
+                        findFragmentById(R.id.list_fragment);
+            }
+
+            if (restaurantListFrag == null)
+                return;
+
+            isFiltering = true;
+            restaurantListFrag.setupListAdapter(lat, log, filteredList);
+        } else isFiltering = false;
     }
 
     public boolean isDownloadedFromInternet() {
@@ -314,4 +339,27 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
         }
     }
 
+    @Override
+    public void onRestaurantSelected(int position) {
+
+        Restaurant selectedRestaurant;
+        if (isFiltering)
+            selectedRestaurant = filteredList.get(position);
+        else selectedRestaurant = jsonString.get(position);
+
+        // Capture the restaurant fragment from the activity layout
+        RestaurantDetailsFragment restaurantDetailsFragment = (RestaurantDetailsFragment)
+                getSupportFragmentManager().findFragmentById(R.id.details_fragment);
+
+        if (restaurantDetailsFragment != null) {
+            // If restaurant frag is available, we're in two-pane layout...
+            restaurantDetailsFragment.setupViews(selectedRestaurant);
+        } else {
+            // If the frag is not available, we're in the one-pane layout...
+            Parcelable parcelable = Parcels.wrap(selectedRestaurant);
+            Intent i = new Intent(getApplicationContext(), RestaurantDetailsActivity.class);
+            i.putExtra("RESTAURANT", parcelable);
+            startActivity(i);
+        }
+    }
 }
