@@ -35,6 +35,8 @@ public class RestaurantsDetailsActivity extends AppCompatActivity {
     private FloatingActionButton fabCall;
 
     private Restaurant mRestaurant;
+    double lat = 0.0;
+    double log = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,9 @@ public class RestaurantsDetailsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        lat = getIntent().getDoubleExtra("actualLat", 0.0);
+        log = getIntent().getDoubleExtra("actualLog", 0.0);
 
         mRestaurant = Parcels.unwrap(getIntent().getParcelableExtra("RESTAURANT"));
 
@@ -93,6 +98,8 @@ public class RestaurantsDetailsActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("RESTAURANT_LOCATION", Parcels.wrap(mRestaurant));
                 Intent i = new Intent(this, MapsActivity.class);
+                i.putExtra("actualLog", log);
+                i.putExtra("actualLat", lat);
                 i.putExtras(bundle);
                 startActivity(i);
                 break;

@@ -8,4 +8,5 @@
     <string name="retry">Reintentar</string>
     <string name="phone_error">Usted no cuenta con servicio telefónico.</string>
     <string name="accept">Aceptar</string>
+    <string name="informacion">Información</string>
 </resources>

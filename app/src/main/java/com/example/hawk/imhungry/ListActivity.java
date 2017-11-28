@@ -138,6 +138,8 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
                     Intent i = new Intent(this, MapsActivity.class);
                     Parcelable listParcelable = Parcels.wrap(jsonString);
                     i.putExtra("RESTAURANT_LIST", listParcelable);
+                    i.putExtra("actualLog", log);
+                    i.putExtra("actualLat", lat);
                     startActivity(i);
                 }
                 break;
@@ -158,14 +160,11 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean checkGPSPermission() {
+    public void checkGPSPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            return false;
-        } else {
-            return true;
         }
     }
 
@@ -270,6 +269,8 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
     public void setList(double lat , double log, final List<Restaurant> list) {
 
         if(list!=null) {
+            final double latFi = lat;
+            final double logFi = log;
             progressBar.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
             ListAdapter la = new ListAdapter(this, R.layout.adapter_list, list,
@@ -281,6 +282,8 @@ public class ListActivity extends AppCompatActivity implements JsonFromInternet.
                     Parcelable listParcelable = Parcels.wrap(list.get(position));
                     Intent i = new Intent(getApplicationContext(), RestaurantsDetailsActivity.class);
                     i.putExtra("RESTAURANT", listParcelable);
+                    i.putExtra("actualLog", logFi);
+                    i.putExtra("actualLat", latFi);
                     startActivity(i);
                 }
             });
