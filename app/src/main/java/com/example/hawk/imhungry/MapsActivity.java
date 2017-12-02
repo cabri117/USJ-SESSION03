@@ -85,12 +85,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
-        final LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        LatLng location = new LatLng(lat, log);
-        mMap.setOnMarkerClickListener(this);
-        mMap.addMarker(addMarker(location, "Aqui Estoy Yo" ,
-                "0", mMap, R.drawable.my_marker));
         int count = 0;
+        LatLng location = new LatLng(lat, log);
 
 
 
@@ -107,6 +103,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             //Move the camera to the user's location and zoom in!
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 17.0f));
         } else {
+            final LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            location = new LatLng(lat, log);
+            mMap.setOnMarkerClickListener(this);
+            mMap.addMarker(addMarker(location, "Aqui Estoy Yo" ,
+                    "0", mMap, R.drawable.my_marker));
             mMap.addMarker(addMarker(location, "Aqui Estoy Yo" ,
                     String.valueOf(mRestaurants.size()), mMap, R.drawable.my_marker));
             builder.include(location);
@@ -231,7 +232,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 Parcelable listParcelable = Parcels.wrap(mRestaurants.get(position));
-                Intent i = new Intent(getApplicationContext(), RestaurantsDetailsActivity.class);
+                Intent i = new Intent(getApplicationContext(), RestaurantDetailsActivity.class);
                 i.putExtra("RESTAURANT", listParcelable);
                 i.putExtra("actualLog", log);
                 i.putExtra("actualLat", lat);
