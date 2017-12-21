@@ -169,6 +169,8 @@ public class RestaurantDetailsFragment extends Fragment {
             bundle.putParcelable("RESTAURANT_LOCATION", Parcels.wrap(mRestaurant));
             Intent i = new Intent(getActivity(), MapsActivity.class);
             i.putExtras(bundle);
+            i.putExtra("actualLog", log);
+            i.putExtra("actualLat", lat);
             startActivity(i);
         }
     };

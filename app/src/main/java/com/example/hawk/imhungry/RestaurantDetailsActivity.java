@@ -1,11 +1,7 @@
 package com.example.hawk.imhungry;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import org.parceler.Parcels;
 
@@ -37,6 +33,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
             RestaurantDetailsFragment restaurantDetailsFrag = new RestaurantDetailsFragment();
             Bundle args = new Bundle();
             args.putParcelable("RESTAURANT", getIntent().getParcelableExtra("RESTAURANT"));
+            args.putDouble("actualLat", getIntent().getDoubleExtra("actualLat", 0.0));
+            args.putDouble("actualLog", getIntent().getDoubleExtra("actualLog", 0.0));
             restaurantDetailsFrag.setArguments(args);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, restaurantDetailsFrag)
@@ -45,13 +43,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

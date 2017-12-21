@@ -44,7 +44,6 @@ class JsonFromInternet extends AsyncTask<String, String, String> {
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
-
             InputStream stream = connection.getInputStream();
 
             reader = new BufferedReader(new InputStreamReader(stream));
@@ -55,11 +54,9 @@ class JsonFromInternet extends AsyncTask<String, String, String> {
             while ((line = reader.readLine()) != null) {
                 buffer.append(line+"\n");
                 Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
-
             }
 
             return buffer.toString();
-
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

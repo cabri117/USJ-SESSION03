@@ -334,6 +334,8 @@ public class MainActivity extends AppCompatActivity implements JsonFromInternet.
             Parcelable parcelable = Parcels.wrap(selectedRestaurant);
             Intent i = new Intent(getApplicationContext(), RestaurantDetailsActivity.class);
             i.putExtra("RESTAURANT", parcelable);
+            i.putExtra("actualLog", log);
+            i.putExtra("actualLat", lat);
             startActivity(i);
         }
     }

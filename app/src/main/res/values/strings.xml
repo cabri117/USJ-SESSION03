@@ -9,4 +9,6 @@
     <string name="phone_error">Usted no cuenta con servicio telefónico.</string>
     <string name="accept">Aceptar</string>
     <string name="informacion">Información</string>
+    <string name="my_location">Mi localización</string>
+    <string name="fetching_route_please_wait">Buscando ruta, por favor espere...</string>
 </resources>
