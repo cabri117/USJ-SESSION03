@@ -1,7 +1,11 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.views.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.hawk.imhungry.R;
+import com.example.hawk.imhungry.views.fragments.RestaurantDetailsFragment;
+import com.example.hawk.imhungry.models.Restaurant;
 
 import org.parceler.Parcels;
 

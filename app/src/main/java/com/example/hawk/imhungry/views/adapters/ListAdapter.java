@@ -1,4 +1,4 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.views.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,10 +10,14 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.hawk.imhungry.R;
+import com.example.hawk.imhungry.models.Restaurant;
+import com.example.hawk.imhungry.utilities.GlideApp;
+
 import java.util.List;
 import java.util.Locale;
 
-import static com.example.hawk.imhungry.AppHelpers.meterDistanceBetweenPoints;
+import static com.example.hawk.imhungry.utilities.AppHelpers.meterDistanceBetweenPoints;
 
 /**
  * Created by hawk on 11/9/17.

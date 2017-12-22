@@ -1,4 +1,4 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.models;
 
 import org.parceler.Parcel;
 

@@ -1,27 +1,21 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.utilities;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Created by hawk on 11/14/17.
  */
 
-class JsonFromInternet extends AsyncTask<String, String, String> {
+public class JsonFromInternet extends AsyncTask<String, String, String> {
     private MyAsyncTaskListener mListener;
     private String mUrl;
 

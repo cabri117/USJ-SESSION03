@@ -1,4 +1,4 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,6 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
+
+import com.example.hawk.imhungry.views.adapters.ListAdapter;
+import com.example.hawk.imhungry.R;
+import com.example.hawk.imhungry.models.Restaurant;
 
 import java.util.List;
 
@@ -86,7 +90,7 @@ public class RestaurantListFragment extends ListFragment {
         getListView().setItemChecked(position, true);
     }
 
-    protected void setupListAdapter(double latitude, double longitude, List<Restaurant> items) {
+    public void setupListAdapter(double latitude, double longitude, List<Restaurant> items) {
         mLat = latitude;
         mLong = longitude;
         mItems = items;

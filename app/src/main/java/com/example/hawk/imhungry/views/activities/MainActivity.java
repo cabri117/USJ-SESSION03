@@ -1,4 +1,4 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.views.activities;
 
 import android.Manifest;
 import android.app.SearchManager;
@@ -22,6 +22,13 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.hawk.imhungry.utilities.AppHelpers;
+import com.example.hawk.imhungry.R;
+import com.example.hawk.imhungry.utilities.JsonFromInternet;
+import com.example.hawk.imhungry.views.fragments.RestaurantDetailsFragment;
+import com.example.hawk.imhungry.views.fragments.RestaurantListFragment;
+import com.example.hawk.imhungry.utilities.URLContants;
+import com.example.hawk.imhungry.models.Restaurant;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 
 import org.parceler.Parcels;

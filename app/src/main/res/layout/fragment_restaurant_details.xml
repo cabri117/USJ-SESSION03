@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
-    tools:context="com.example.hawk.imhungry.RestaurantDetailsFragment">
+    tools:context="com.example.hawk.imhungry.views.fragments.RestaurantDetailsFragment">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="0dp"

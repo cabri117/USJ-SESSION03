@@ -1,4 +1,4 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.views.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +20,10 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.hawk.imhungry.R;
+import com.example.hawk.imhungry.models.Restaurant;
+import com.example.hawk.imhungry.utilities.GlideApp;
+import com.example.hawk.imhungry.views.activities.MapsActivity;
 
 import org.parceler.Parcels;
 
@@ -75,7 +79,7 @@ public class RestaurantDetailsFragment extends Fragment {
         setupViews(mRestaurant);
     }
 
-    protected void setupViews(Restaurant restaurant) {
+    public void setupViews(Restaurant restaurant) {
         if (restaurant == null) {
             constraintLayout.setVisibility(View.GONE);
             return;
@@ -93,7 +97,7 @@ public class RestaurantDetailsFragment extends Fragment {
         tvDescription.setText(mRestaurant.getDescription());
 
         GlideApp.with(this)
-                .load(mRestaurant.thumbnail)
+                .load(mRestaurant.getThumbnail())
                 .placeholder(R.mipmap.ic_launcher)
                 .into(ivThumbnail);
 

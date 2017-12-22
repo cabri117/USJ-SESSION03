@@ -1,4 +1,4 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.utilities;
 
 /**
  * Created by hawk on 11/9/17.
@@ -10,6 +10,8 @@ import java.util.List;
 
 import android.content.res.Resources;
 import android.util.Log;
+
+import com.example.hawk.imhungry.models.Restaurant;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

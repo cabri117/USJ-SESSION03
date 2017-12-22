@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.hawk.imhungry.MainActivity">
+    tools:context="com.example.hawk.imhungry.views.activities.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
@@ -41,7 +41,7 @@
 
         <fragment
             android:id="@+id/list_fragment"
-            android:name="com.example.hawk.imhungry.RestaurantListFragment"
+            android:name="com.example.hawk.imhungry.views.fragments.RestaurantListFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -49,7 +49,7 @@
 
         <fragment
             android:id="@+id/details_fragment"
-            android:name="com.example.hawk.imhungry.RestaurantDetailsFragment"
+            android:name="com.example.hawk.imhungry.views.fragments.RestaurantDetailsFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"

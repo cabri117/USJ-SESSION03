@@ -1,4 +1,4 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.utilities;
 
 /**
  * Created by mcvasquez on 12/22/17.

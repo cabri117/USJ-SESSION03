@@ -1,9 +1,11 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.views.activities;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.hawk.imhungry.R;
 
 public class SplashActivity extends AppCompatActivity {
 

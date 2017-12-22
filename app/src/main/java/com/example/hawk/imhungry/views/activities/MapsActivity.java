@@ -1,4 +1,4 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.views.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,6 +13,10 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.hawk.imhungry.R;
+import com.example.hawk.imhungry.utilities.JsonFromInternet;
+import com.example.hawk.imhungry.utilities.URLContants;
+import com.example.hawk.imhungry.models.Restaurant;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,7 +37,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.hawk.imhungry.AppHelpers.meterDistanceBetweenPoints;
+import static com.example.hawk.imhungry.utilities.AppHelpers.meterDistanceBetweenPoints;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, JsonFromInternet.MyAsyncTaskListener {
@@ -117,13 +121,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // Add a marker in selected restaurant and move the camera
             location = new LatLng(mRestaurant.getLatitude(), mRestaurant.getLongitude());
 
-            mMap.addMarker(addMarker(location, mRestaurant.name,
+            mMap.addMarker(addMarker(location, mRestaurant.getName(),
                     String.valueOf(count), mMap, R.drawable.rest_marker));
             builder.include(location);
         } else {
             for (Restaurant restaurant : mRestaurants) {
                 location = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
-                mMap.addMarker(addMarker(location, restaurant.name,
+                mMap.addMarker(addMarker(location, restaurant.getName(),
                         String.valueOf(count), mMap, R.drawable.rest_marker));
 
                 builder.include(location);

@@ -1,5 +1,6 @@
-package com.example.hawk.imhungry;
+package com.example.hawk.imhungry.utilities;
 
+import com.example.hawk.imhungry.models.Restaurant;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
