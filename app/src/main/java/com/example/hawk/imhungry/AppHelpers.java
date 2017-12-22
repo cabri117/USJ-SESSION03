@@ -1,10 +1,17 @@
 package com.example.hawk.imhungry;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
 /**
  * Created by hawk on 11/28/17.
  */
 
-public class utils {
+public class AppHelpers {
 
     public static double meterDistanceBetweenPoints(double lat_a, double lng_a, float lat_b, float lng_b) {
         float pk = (float) (180.f/Math.PI);
@@ -20,5 +27,12 @@ public class utils {
         double tt = Math.acos(t1 + t2 + t3);
 
         return 6366000 * tt;
+    }
+
+    public static List<Restaurant> constructRestaurantsUsingGson(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        Type listType = new TypeToken<List<Restaurant>>() {
+        }.getType();
+        return gson.fromJson(jsonString, listType);
     }
 }

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Locale;
 
-import static com.example.hawk.imhungry.utils.meterDistanceBetweenPoints;
+import static com.example.hawk.imhungry.AppHelpers.meterDistanceBetweenPoints;
 
 /**
  * Created by hawk on 11/9/17.

@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements JsonFromInternet.
         filteredList = new ArrayList<>();
         isFiltering = false;
 
-        jFI = new JsonFromInternet();
+        jFI = new JsonFromInternet.Builder(URLContants.RESTAURANTS).build();
         jFI.setListener(this);
         String requiredPermission = "android.permission.ACCESS_FINE_LOCATION";
         int checkVal = this.checkCallingOrSelfPermission(requiredPermission);
@@ -227,9 +227,9 @@ public class MainActivity extends AppCompatActivity implements JsonFromInternet.
     }
 
     @Override
-    public void onPostExecuteConcluded(List<Restaurant> result) {
+    public void onPostExecuteConcluded(String result) {
         if (result != null)
-            jsonString = result;
+            jsonString = AppHelpers.constructRestaurantsUsingGson(result);
         onInit();
     }
 
@@ -290,10 +290,10 @@ public class MainActivity extends AppCompatActivity implements JsonFromInternet.
             RestaurantListFragment restaurantListFrag;
 
             if (findViewById(R.id.fragment_container) != null) {
-                restaurantListFrag = (RestaurantListFragment)getSupportFragmentManager().
+                restaurantListFrag = (RestaurantListFragment) getSupportFragmentManager().
                         findFragmentById(R.id.fragment_container);
             } else {
-                restaurantListFrag = (RestaurantListFragment)getSupportFragmentManager().
+                restaurantListFrag = (RestaurantListFragment) getSupportFragmentManager().
                         findFragmentById(R.id.list_fragment);
             }
 

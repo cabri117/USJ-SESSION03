@@ -3,12 +3,10 @@ package com.example.hawk.imhungry;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,30 +30,30 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.hawk.imhungry.utils.meterDistanceBetweenPoints;
+import static com.example.hawk.imhungry.AppHelpers.meterDistanceBetweenPoints;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener, JsonFromInternet.MyAsyncTaskListener {
 
-    private Restaurant mRestaurant;
-    private List<Restaurant> mRestaurants;
-    double lat = 0.0;
-    double log = 0.0;
+
     TextView restText;
     TextView textKm;
     GoogleMap mMap;
     Polyline linePoly;
     RelativeLayout restLay;
     Button infoBtn;
+    JsonFromInternet jFI;
+
+    private Restaurant mRestaurant;
+    private List<Restaurant> mRestaurants;
+    double lat = 0.0;
+    double log = 0.0;
+    LatLng mCurrentUserMarkerClicked;
+
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +72,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         textKm = findViewById(R.id.textKm);
         infoBtn = findViewById(R.id.infoBtn);
 
+        mProgressDialog = new ProgressDialog(this);
+
         mRestaurant = Parcels.unwrap(getIntent().getParcelableExtra("RESTAURANT_LOCATION"));
         lat = getIntent().getDoubleExtra("actualLat", 0.0);
         log = getIntent().getDoubleExtra("actualLog", 0.0);
@@ -89,8 +89,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    protected void onDestroy() {
+        super.onDestroy();
+        if (jFI != null) {
+            if (!jFI.isCancelled()) {
+                jFI.cancel(true);
+            }
+        }
+    }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
@@ -161,13 +170,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
+        if (mCurrentUserMarkerClicked != null &&
+                mCurrentUserMarkerClicked.latitude == marker.getPosition().latitude &&
+                mCurrentUserMarkerClicked.longitude == marker.getPosition().longitude)
+            return true;
+        else mCurrentUserMarkerClicked = marker.getPosition();
+
         restLay.setVisibility(View.GONE);
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(lat, log));
         builder.include(marker.getPosition());
 
-        if (marker.getTitle().equalsIgnoreCase(getString(R.string.my_location)))
-        {
+        if (marker.getTitle().equalsIgnoreCase(getString(R.string.my_location))) {
             marker.showInfoWindow();
             return true;
         }
@@ -177,14 +191,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String urlTopass;
         if (mRestaurant != null) {
             setAttrs(builder, position, marker, mRestaurant, false);
-            urlTopass = makeURL(lat, log, mRestaurant.getLatitude(), mRestaurant.getLongitude());
+            urlTopass = URLContants.makeRoute(lat, log, mRestaurant.getLatitude(), mRestaurant.getLongitude());
         } else {
             setAttrs(builder, position, marker, mRestaurants.get(position), true);
-            urlTopass = makeURL(lat, log, mRestaurants.get(position).getLatitude(), mRestaurants.get(position).getLongitude());
+            urlTopass = URLContants.makeRoute(lat, log, mRestaurants.get(position).getLatitude(), mRestaurants.get(position).getLongitude());
         }
 
-        if (!TextUtils.isEmpty(urlTopass))
-            new connectAsyncTask(urlTopass).execute();
+        jFI = new JsonFromInternet.Builder(urlTopass).build();
+        jFI.setListener(this);
+        jFI.execute();
+
         return true;
     }
 
@@ -222,95 +238,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private class connectAsyncTask extends AsyncTask<Void, Void, String> {
-        private ProgressDialog progressDialog;
-        String url;
-
-        connectAsyncTask(String urlPass) {
-            url = urlPass;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(MapsActivity.this);
-            progressDialog.setMessage(getString(R.string.fetching_route_please_wait));
-            progressDialog.setIndeterminate(true);
-            progressDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            JSONParser jParser = new JSONParser();
-            String json = jParser.getJSONFromUrl(url);
-            return json;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            progressDialog.hide();
-            if (result != null) {
-                drawPath(result);
-            }
-        }
+    @Override
+    public void onPreExecuteConcluded() {
+        mProgressDialog.setMessage(getString(R.string.fetching_route_please_wait));
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
     }
 
-    public String makeURL(double sourcelat, double sourcelog, double destlat,
-                          double destlog) {
-        StringBuilder urlString = new StringBuilder();
-        urlString.append("http://maps.googleapis.com/maps/api/directions/json");
-        urlString.append("?origin=");// from
-        urlString.append(Double.toString(sourcelat));
-        urlString.append(",");
-        urlString.append(Double.toString(sourcelog));
-        urlString.append("&destination=");// to
-        urlString.append(Double.toString(destlat));
-        urlString.append(",");
-        urlString.append(Double.toString(destlog));
-        urlString.append("&sensor=false&mode=walking&alternatives=true");
-        return urlString.toString();
-    }
-
-    public class JSONParser {
-
-        InputStream is = null;
-        JSONObject jObj = null;
-        String json = "";
-
-        // constructor
-        public JSONParser() {
-        }
-
-        public String getJSONFromUrl(String url) {
-            // Making HTTP request
-            try {
-                HttpURLConnection connection = null;
-                URL urls = new URL(url);
-                connection = (HttpURLConnection) urls.openConnection();
-                connection.connect();
-
-                is = connection.getInputStream();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(is, "iso-8859-1"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-
-                json = sb.toString();
-                is.close();
-            } catch (Exception e) {
-                Log.e("Buffer Error", "Error converting result " + e.toString());
-            }
-            return json;
-
+    @Override
+    public void onPostExecuteConcluded(String result) {
+        mProgressDialog.hide();
+        if (result != null) {
+            drawPath(result);
         }
     }
 

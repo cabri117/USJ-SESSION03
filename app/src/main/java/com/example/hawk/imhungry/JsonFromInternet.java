@@ -1,6 +1,7 @@
 package com.example.hawk.imhungry;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -13,7 +14,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -23,10 +23,22 @@ import java.util.List;
 
 class JsonFromInternet extends AsyncTask<String, String, String> {
     private MyAsyncTaskListener mListener;
-    public final String URL_LINK = "http://thormobileve.com/restaurants.json";
+    private String mUrl;
+
+    private JsonFromInternet(Builder builder) {
+        mUrl = builder.mUrl;
+    }
+
+//    public void setUrl(String url) {
+//        if (TextUtils.isEmpty(url))
+//            url = URLContants.RESTAURANTS;
+//        else mUrl = url;
+//    }
+
     final public void setListener(MyAsyncTaskListener listener) {
         mListener = listener;
     }
+
     protected void onPreExecute() {
         super.onPreExecute();
         if (mListener != null)
@@ -35,12 +47,11 @@ class JsonFromInternet extends AsyncTask<String, String, String> {
 
     protected String doInBackground(String... params) {
 
-
         HttpURLConnection connection = null;
         BufferedReader reader = null;
 
         try {
-            URL url = new URL(URL_LINK);
+            URL url = new URL(mUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
@@ -52,14 +63,11 @@ class JsonFromInternet extends AsyncTask<String, String, String> {
             String line = "";
 
             while ((line = reader.readLine()) != null) {
-                buffer.append(line+"\n");
+                buffer.append(line + "\n");
                 Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
             }
 
             return buffer.toString();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -81,17 +89,27 @@ class JsonFromInternet extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         if (mListener != null)
-            mListener.onPostExecuteConcluded(constructUsingGson(result));
+            mListener.onPostExecuteConcluded(result);
     }
 
     public interface MyAsyncTaskListener {
         void onPreExecuteConcluded();
-        void onPostExecuteConcluded(List<Restaurant> result);
+
+        void onPostExecuteConcluded(String result);
     }
 
-    public List<Restaurant> constructUsingGson(String jsonString) {
-        Gson gson = new GsonBuilder().create();
-        Type listType =  new TypeToken<List<Restaurant>>() {}.getType();
-        return gson.fromJson(jsonString, listType);
+    public static class Builder {
+        private final String mUrl;
+
+        public Builder(String url) {
+            if (TextUtils.isEmpty(url))
+                url = URLContants.RESTAURANTS;
+
+            this.mUrl = url;
+        }
+
+        public JsonFromInternet build() {
+            return new JsonFromInternet(this);
+        }
     }
 }
